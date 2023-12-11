@@ -32,4 +32,18 @@ const registerUser = asyncHandler(async (req, res) => {
     );
 });
 
-export { registerUser };
+const loginUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (user && (await user.isPasswordCorrect)) {
+    return res
+      .status(200)
+      .json(new ApiResponse(200, `${user.username} logged in successfully`));
+  } else {
+    throw new ApiError(404, "Invalid credentials");
+  }
+});
+
+export { registerUser, loginUser };
